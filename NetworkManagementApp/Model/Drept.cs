@@ -20,9 +20,5 @@ namespace NetworkManagementApp.Model
 
         public Drept() { }
 
-        public Drept(int id, string nume) : this(nume)
-        {
-            this.Id = id;
-        }
     }
 }

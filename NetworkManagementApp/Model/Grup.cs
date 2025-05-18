@@ -22,10 +22,6 @@ namespace NetworkManagementApp.Model
 
         public Grup() { }
 
-        public Grup(int id, string nume) : this(nume)
-        {
-            this.Id = id;
-        }
 
         public void AdaugaUtilizator(Utilizator utilizator)
         {

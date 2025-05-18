@@ -21,10 +21,7 @@ namespace NetworkManagementApp.Model
 
         public Utilizator() { }
 
-        public Utilizator(int id, string nume) : this(nume)
-        {
-            this.Id = id;
-        }
+
         public void AdaugaGrup(Grup grup)
         {
             if (!Grupuri.Contains(grup))
@@ -61,7 +58,7 @@ namespace NetworkManagementApp.Model
             }
         }
 
-        public LIst<Drept> GetDrepturi() {
+        public List<Drept> GetDrepturi() {
             HashSet<Drept> drepturi = new();
             foreach (var grup in Grupuri) {
                 foreach (var drept in grup.Drepturi) { 
