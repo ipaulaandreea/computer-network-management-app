@@ -172,7 +172,7 @@
             btnAddUser.Name = "btnAddUser";
             btnAddUser.Size = new Size(149, 29);
             btnAddUser.TabIndex = 6;
-            btnAddUser.Text = "Adauga Utilizator";
+            btnAddUser.Text = "&Adauga Utilizator";
             btnAddUser.UseVisualStyleBackColor = true;
             btnAddUser.Click += btnAddUser_Click;
             // 
@@ -264,7 +264,7 @@
             btnAdaugaGrup.Name = "btnAdaugaGrup";
             btnAdaugaGrup.Size = new Size(149, 29);
             btnAdaugaGrup.TabIndex = 17;
-            btnAdaugaGrup.Text = "Adauga Grup";
+            btnAdaugaGrup.Text = "&Adauga Grup";
             btnAdaugaGrup.UseVisualStyleBackColor = true;
             btnAdaugaGrup.Click += btnAdaugaGrup_Click;
             // 
@@ -368,7 +368,7 @@
             btnAddDrept.Name = "btnAddDrept";
             btnAddDrept.Size = new Size(149, 29);
             btnAddDrept.TabIndex = 25;
-            btnAddDrept.Text = "Adauga Drept";
+            btnAddDrept.Text = "&Adauga Drept";
             btnAddDrept.UseVisualStyleBackColor = true;
             btnAddDrept.Click += btnAddDrept_Click;
             // 

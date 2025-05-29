@@ -22,7 +22,7 @@ Create forms for input / update / delete data
 ---
 
 ## ⌨️ 4. Keyboard Shortcuts (0.25p)
-- [ ] Implement **Alt** shortcuts in at least one place
+- [x] Implement **Alt** shortcuts in at least one place
 
 ---
 
