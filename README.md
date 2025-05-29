@@ -10,8 +10,8 @@ Starting grade: **1.00p**
 
 ## 🖼️ 2. User Interface (3.00p)
 Create forms for input / update / delete data  
-  - [ ] 1.50p: Implement full CRUD for all main classes  
-  - [ ] 1.50p: Design a well-structured, intuitive UI
+  - [x] 1.50p: Implement full CRUD for all main classes  
+  - [x] 1.50p: Design a well-structured, intuitive UI
 
 ---
 

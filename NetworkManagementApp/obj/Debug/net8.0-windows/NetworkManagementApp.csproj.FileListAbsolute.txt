@@ -15,3 +15,6 @@ C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\ob
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.genruntimeconfig.cache
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\ref\NetworkManagementApp.dll
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.Form2.resources
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.EditDreptForm.resources
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.EditGrupForm.resources
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.EditUserForm.resources

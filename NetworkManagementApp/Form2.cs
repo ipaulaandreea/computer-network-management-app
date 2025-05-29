@@ -21,6 +21,13 @@ namespace NetworkManagementApp
         public Form2()
         {
             InitializeComponent();
+            Load += Form2_Load;
+
+        }
+
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            RefreshDreptList();
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -74,22 +81,32 @@ namespace NetworkManagementApp
             string nume = tbNume.Text.Trim();
             if (string.IsNullOrWhiteSpace(nume)) return;
 
-            var grup = lbGrup.SelectedItem?.ToString();
-            var drept = lbDrepturi.SelectedItem?.ToString();
-
-            var g = grupuri.FirstOrDefault(x => x.Nume == grup) ?? new Grup(grupuri.Count + 1, grup);
-            if (!grupuri.Contains(g)) grupuri.Add(g);
-
-            var d = drepturi.FirstOrDefault(x => x.Nume == drept) ?? new Drept(drepturi.Count + 1, drept);
-            if (!drepturi.Contains(d)) drepturi.Add(d);
-
-            if (!g.Drepturi.Contains(d)) g.AdaugaDrept(d);
+            if (clbGrupuri.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Selectați cel puțin un grup pentru utilizator.");
+                return;
+            }
 
             var user = new Utilizator(utilizatori.Count + 1, nume);
-            user.AdaugaGrup(g);
-            utilizatori.Add(user);
 
+            foreach (var grupNume in clbGrupuri.CheckedItems)
+            {
+                var grup = grupuri.FirstOrDefault(g => g.Nume == grupNume.ToString());
+                if (grup != null)
+                {
+                    user.AdaugaGrup(grup);
+                }
+            }
+
+            utilizatori.Add(user);
             RefreshUsersListView();
+
+            tbNume.Clear();
+
+            // Resetare selecții grupuri
+            for (int i = 0; i < clbGrupuri.Items.Count; i++)
+                clbGrupuri.SetItemChecked(i, false);
+            clbGrupuri.ClearSelected();
         }
 
         private void RefreshGrupuriListView()
@@ -115,27 +132,38 @@ namespace NetworkManagementApp
                 return;
             }
 
-            string dreptSelectat = lbDrepturiGrup.SelectedItem?.ToString();
-            if (string.IsNullOrWhiteSpace(dreptSelectat))
+            if (clbDrepturi.CheckedItems.Count == 0)
             {
-                MessageBox.Show("Selectați un drept pentru grup.");
+                MessageBox.Show("Selectați cel puțin un drept pentru grup.");
                 return;
             }
 
-            var drept = drepturi.FirstOrDefault(d => d.Nume == dreptSelectat);
-            if (drept == null)
+            var grup = new Grup(grupuri.Count + 1, numeGrup);
+
+            foreach (var dreptNume in clbDrepturi.CheckedItems)
             {
-                drept = new Drept(drepturi.Count + 1, dreptSelectat);
-                drepturi.Add(drept);
+                var drept = drepturi.FirstOrDefault(d => d.Nume == dreptNume.ToString());
+                if (drept == null)
+                {
+                    drept = new Drept(drepturi.Count + 1, dreptNume.ToString());
+                    drepturi.Add(drept);
+                }
+
+                grup.AdaugaDrept(drept);
             }
 
-            var grup = new Grup(grupuri.Count + 1, numeGrup);
-            grup.AdaugaDrept(drept);
             grupuri.Add(grup);
-
             RefreshGrupuriListView();
-            RefreshGrupListBox(); 
+            RefreshGrupListBox();
             tbNumeGrup.Clear();
+
+            for (int i = 0; i < clbDrepturi.Items.Count; i++)
+            {
+                clbDrepturi.SetItemChecked(i, false);
+            }
+
+            clbDrepturi.ClearSelected();
+
         }
 
         private void btnAddDrept_Click(object sender, EventArgs e)
@@ -146,6 +174,8 @@ namespace NetworkManagementApp
             var drept = new Drept(drepturi.Count + 1, nume);
             drepturi.Add(drept);
             RefreshDreptList();
+            textBox1.Clear();
+
         }
 
         private void RefreshDreptList()
@@ -157,26 +187,206 @@ namespace NetworkManagementApp
                 listView1.Items.Add(item);
             }
 
-            lbDrepturi.Items.Clear();
-            lbDrepturiGrup.Items.Clear();
-            foreach (var d in drepturi)
+
+            if (clbDrepturi != null)
             {
-                lbDrepturi.Items.Add(d.Nume);
-                lbDrepturiGrup.Items.Add(d.Nume);
+                clbDrepturi.Items.Clear();
+                foreach (var d in drepturi)
+                {
+                    clbDrepturi.Items.Add(d.Nume);
+                }
             }
         }
 
         private void RefreshGrupListBox()
         {
-            lbGrup.Items.Clear();
+            clbGrupuri.Items.Clear();
+
             foreach (var grup in grupuri)
             {
-                lbGrup.Items.Add(grup.Nume);
+                clbGrupuri.Items.Add(grup.Nume);
+            }
+        }
+
+        private void btnDeleteDrept_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 0) return;
+
+            var item = listView1.SelectedItems[0];
+            var numeDrept = item.Text;
+
+            var result = MessageBox.Show($"Ești sigur că vrei să ștergi dreptul '{numeDrept}'?", "Confirmare ștergere", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                var drept = drepturi.FirstOrDefault(d => d.Nume == numeDrept);
+                if (drept != null)
+                {
+                    drepturi.Remove(drept);
+                    RefreshDreptList();
+                }
+            }
+        }
+
+        private void btnEditDrept_Click(object sender, EventArgs e)
+        {
+            if (listView1.SelectedItems.Count == 0) return;
+
+            var item = listView1.SelectedItems[0];
+            var numeVechi = item.Text;
+
+            var drept = drepturi.FirstOrDefault(d => d.Nume == numeVechi);
+            if (drept == null) return;
+
+            var formEdit = new EditDreptForm(numeVechi);
+            if (formEdit.ShowDialog() == DialogResult.OK)
+            {
+                drept.Nume = formEdit.NumeDrept;
+                RefreshDreptList();
+            }
+        }
+
+        private void lbDrepturiGrup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnStergeGrup_Click(object sender, EventArgs e)
+        {
+            if (lvGrupuri.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selectați un grup pentru a-l șterge.");
+                return;
+            }
+
+            var item = lvGrupuri.SelectedItems[0];
+            var numeGrup = item.Text;
+
+            var confirmare = MessageBox.Show($"Ești sigur că vrei să ștergi grupul '{numeGrup}'?", "Confirmare ștergere", MessageBoxButtons.YesNo);
+            if (confirmare == DialogResult.Yes)
+            {
+                var grup = grupuri.FirstOrDefault(g => g.Nume == numeGrup);
+                if (grup != null)
+                {
+                    foreach (var user in utilizatori)
+                    {
+                        user.Grupuri.Remove(grup);
+                    }
+
+                    grupuri.Remove(grup);
+                    RefreshGrupuriListView();
+                    RefreshGrupListBox();
+                    RefreshUsersListView();
+                }
+            }
+        }
+
+        private void btnModificaGrup_Click(object sender, EventArgs e)
+        {
+            if (lvGrupuri.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selectați un grup pentru a-l modifica.");
+                return;
+            }
+
+            var item = lvGrupuri.SelectedItems[0];
+            var numeGrup = item.Text;
+
+            var grup = grupuri.FirstOrDefault(g => g.Nume == numeGrup);
+            if (grup == null) return;
+
+            var formEdit = new EditGrupForm(grup.Nume, drepturi, grup.Drepturi);
+            if (formEdit.ShowDialog() == DialogResult.OK)
+            {
+                grup.Nume = formEdit.NumeGrup;
+
+                grup.Drepturi.Clear();
+
+                foreach (var dreptNume in formEdit.DrepturiSelectate)
+                {
+                    var drept = drepturi.FirstOrDefault(d => d.Nume == dreptNume);
+                    if (drept != null)
+                        grup.AdaugaDrept(drept);
+                }
+
+                RefreshGrupuriListView();
+                RefreshGrupListBox();
+                RefreshUsersListView();
+            }
+        }
+
+        private void clbDrepturi_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnEditUser_Click(object sender, EventArgs e)
+        {
+            if (lvUtilizatori.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selectați un utilizator.");
+                return;
+            }
+
+            var item = lvUtilizatori.SelectedItems[0];
+            var numeUtilizator = item.Text;
+
+            var user = utilizatori.FirstOrDefault(u => u.Nume == numeUtilizator);
+            if (user == null) return;
+
+            var formEdit = new EditUserForm(user.Nume, grupuri, user.Grupuri);
+            if (formEdit.ShowDialog() == DialogResult.OK)
+            {
+                user.Nume = formEdit.NumeUtilizator;
+                user.Grupuri.Clear();
+
+                foreach (var grupNume in formEdit.GrupuriSelectate)
+                {
+                    var grup = grupuri.FirstOrDefault(g => g.Nume == grupNume);
+                    if (grup != null) user.AdaugaGrup(grup);
+                }
+
+                RefreshUsersListView();
             }
         }
 
 
-    }
+        private void RefreshUtilizatoriList()
+        {
+            listView1.Items.Clear();
 
+            foreach (var utilizator in utilizatori)
+            {
+                var item = new ListViewItem(utilizator.Nume);
+                listView1.Items.Add(item);
+            }
 
+            if (clbGrupuri != null)
+            {
+                clbGrupuri.Items.Clear();
+                foreach (var g in grupuri)
+                {
+                    clbGrupuri.Items.Add(g.Nume);
+                }
+            }
+        }
+
+        private void btnDeleteUser_Click(object sender, EventArgs e)
+        {
+            if (lvUtilizatori.SelectedItems.Count == 0) return;
+
+            var item = lvUtilizatori.SelectedItems[0];
+            var numeUtilizator = item.Text;
+
+            var result = MessageBox.Show($"Ești sigur că vrei să ștergi utilizatorul '{numeUtilizator}'?", "Confirmare ștergere", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                var utilizator = utilizatori.FirstOrDefault(u => u.Nume == numeUtilizator);
+                if (utilizator != null)
+                {
+                    utilizatori.Remove(utilizator);
+                    RefreshUsersListView(); 
+                }
+            }
+        }
+        }
 }
