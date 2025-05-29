@@ -18,3 +18,5 @@ C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\ob
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.EditDreptForm.resources
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.EditGrupForm.resources
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.EditUserForm.resources
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.Properties.Resources.resources
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.ChartFormcs.resources

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace NetworkManagementApp
         List<Utilizator> utilizatori = new();
         List<Grup> grupuri = new();
         List<Drept> drepturi = new();
+
 
 
         public Form2()
@@ -165,6 +167,7 @@ namespace NetworkManagementApp
                 utilizatori.Add(user);
                 RefreshUsersListView();
 
+
                 tbNume.Clear();
 
                 // Resetare selecții grupuri
@@ -225,6 +228,7 @@ namespace NetworkManagementApp
             RefreshGrupuriListView();
             RefreshGrupListBox();
             tbNumeGrup.Clear();
+
 
             for (int i = 0; i < clbDrepturi.Items.Count; i++)
             {
@@ -378,6 +382,7 @@ namespace NetworkManagementApp
                         RefreshGrupuriListView();
                         RefreshGrupListBox();
                         RefreshUsersListView();
+
                     }
                 }
             }
@@ -418,6 +423,7 @@ namespace NetworkManagementApp
                 RefreshGrupuriListView();
                 RefreshGrupListBox();
                 RefreshUsersListView();
+
             }
         }
 
@@ -453,6 +459,7 @@ namespace NetworkManagementApp
                 }
 
                 RefreshUsersListView();
+
             }
         }
 
@@ -492,6 +499,7 @@ namespace NetworkManagementApp
                 {
                     utilizatori.Remove(utilizator);
                     RefreshUsersListView();
+
                 }
             }
         }
@@ -596,6 +604,59 @@ namespace NetworkManagementApp
                     MessageBox.Show("Eroare la export: " + ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton1_Click_2(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripTextBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            PrintPreviewDialog previewDialog = new PrintPreviewDialog();
+            previewDialog.Document = printUtilizatori;
+
+            if (previewDialog.ShowDialog() == DialogResult.OK)
+            {
+                printUtilizatori.Print();
+            }
+        }
+
+        private void printUtilizatori_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            float y = 100;
+            var font = new Font("Arial", 12);
+
+            foreach (var user in utilizatori)
+            {
+                var grupuriStr = string.Join(", ", user.Grupuri.Select(g => g.Nume));
+                var drepturiStr = string.Join(", ", user.GetDrepturi().Select(d => d.Nume));
+                string linie = $"Nume: {user.Nume}, Grupuri: {grupuriStr}, Drepturi: {drepturiStr}";
+
+                e.Graphics.DrawString(linie, font, Brushes.Black, new PointF(100, y));
+                y += 25;
+            }
+        }
+
+        private void ChartToolStrip_Click(object sender, EventArgs e)
+        {
+            var chartForm = new ChartFormcs(grupuri, utilizatori);
+            chartForm.ShowDialog(); 
         }
     }
 }

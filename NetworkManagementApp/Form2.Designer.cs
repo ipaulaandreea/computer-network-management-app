@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             errorNumeUtilizator = new ErrorProvider(components);
             errorNumeGrup = new ErrorProvider(components);
             errorNumeDrept = new ErrorProvider(components);
@@ -53,6 +54,9 @@
             columnHeader4 = new ColumnHeader();
             columnHeader5 = new ColumnHeader();
             tabUtilizatori = new TabPage();
+            toolStrip1 = new ToolStrip();
+            toolStripButton2 = new ToolStripButton();
+            ChartToolStrip = new ToolStripButton();
             clbGrupuri = new CheckedListBox();
             lvUtilizatori = new ListView();
             columnHeader1 = new ColumnHeader();
@@ -70,12 +74,14 @@
             btnDeserialize = new ToolStripMenuItem();
             btnExportToTXT = new ToolStripMenuItem();
             tab = new TabControl();
+            printUtilizatori = new System.Drawing.Printing.PrintDocument();
             ((System.ComponentModel.ISupportInitialize)errorNumeUtilizator).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorNumeGrup).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorNumeDrept).BeginInit();
             tabDrepturi.SuspendLayout();
             tabGrupuri.SuspendLayout();
             tabUtilizatori.SuspendLayout();
+            toolStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
             tab.SuspendLayout();
             SuspendLayout();
@@ -289,7 +295,7 @@
             lvGrupuri.Location = new Point(6, 164);
             lvGrupuri.Margin = new Padding(2);
             lvGrupuri.Name = "lvGrupuri";
-            lvGrupuri.Size = new Size(618, 160);
+            lvGrupuri.Size = new Size(522, 160);
             lvGrupuri.TabIndex = 10;
             lvGrupuri.UseCompatibleStateImageBehavior = false;
             lvGrupuri.View = View.Details;
@@ -306,6 +312,7 @@
             // 
             // tabUtilizatori
             // 
+            tabUtilizatori.Controls.Add(toolStrip1);
             tabUtilizatori.Controls.Add(clbGrupuri);
             tabUtilizatori.Controls.Add(lvUtilizatori);
             tabUtilizatori.Controls.Add(tbNume);
@@ -324,10 +331,43 @@
             tabUtilizatori.Text = "Utilizatori";
             tabUtilizatori.UseVisualStyleBackColor = true;
             // 
+            // toolStrip1
+            // 
+            toolStrip1.Dock = DockStyle.Right;
+            toolStrip1.ImageScalingSize = new Size(20, 20);
+            toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton2, ChartToolStrip });
+            toolStrip1.Location = new Point(595, 30);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Size = new Size(35, 297);
+            toolStrip1.TabIndex = 23;
+            toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripButton2
+            // 
+            toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButton2.Image = (Image)resources.GetObject("toolStripButton2.Image");
+            toolStripButton2.ImageTransparentColor = Color.Magenta;
+            toolStripButton2.Name = "toolStripButton2";
+            toolStripButton2.Size = new Size(32, 24);
+            toolStripButton2.Text = "🖨";
+            toolStripButton2.ToolTipText = "Printeaza raport utilizatori";
+            toolStripButton2.Click += toolStripButton2_Click;
+            // 
+            // ChartToolStrip
+            // 
+            ChartToolStrip.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            ChartToolStrip.Image = (Image)resources.GetObject("ChartToolStrip.Image");
+            ChartToolStrip.ImageTransparentColor = Color.Magenta;
+            ChartToolStrip.Name = "ChartToolStrip";
+            ChartToolStrip.Size = new Size(37, 24);
+            ChartToolStrip.Text = "📊";
+            ChartToolStrip.ToolTipText = "Genereaza Chart";
+            ChartToolStrip.Click += ChartToolStrip_Click;
+            // 
             // clbGrupuri
             // 
             clbGrupuri.FormattingEnabled = true;
-            clbGrupuri.Location = new Point(122, 74);
+            clbGrupuri.Location = new Point(134, 74);
             clbGrupuri.Name = "clbGrupuri";
             clbGrupuri.Size = new Size(166, 70);
             clbGrupuri.TabIndex = 21;
@@ -337,7 +377,7 @@
             lvUtilizatori.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3 });
             lvUtilizatori.FullRowSelect = true;
             lvUtilizatori.GridLines = true;
-            lvUtilizatori.Location = new Point(12, 160);
+            lvUtilizatori.Location = new Point(4, 163);
             lvUtilizatori.Margin = new Padding(2);
             lvUtilizatori.Name = "lvUtilizatori";
             lvUtilizatori.Size = new Size(618, 170);
@@ -363,7 +403,7 @@
             // 
             // tbNume
             // 
-            tbNume.Location = new Point(122, 30);
+            tbNume.Location = new Point(134, 39);
             tbNume.Margin = new Padding(2);
             tbNume.Name = "tbNume";
             tbNume.Size = new Size(166, 27);
@@ -406,7 +446,7 @@
             // labelGrup
             // 
             labelGrup.AutoSize = true;
-            labelGrup.Location = new Point(12, 78);
+            labelGrup.Location = new Point(17, 78);
             labelGrup.Margin = new Padding(2, 0, 2, 0);
             labelGrup.Name = "labelGrup";
             labelGrup.Size = new Size(58, 20);
@@ -417,7 +457,7 @@
             // labelNumeUtilizator
             // 
             labelNumeUtilizator.AutoSize = true;
-            labelNumeUtilizator.Location = new Point(2, 33);
+            labelNumeUtilizator.Location = new Point(6, 42);
             labelNumeUtilizator.Margin = new Padding(2, 0, 2, 0);
             labelNumeUtilizator.Name = "labelNumeUtilizator";
             labelNumeUtilizator.Size = new Size(112, 20);
@@ -444,21 +484,21 @@
             // btnSerialize
             // 
             btnSerialize.Name = "btnSerialize";
-            btnSerialize.Size = new Size(224, 26);
+            btnSerialize.Size = new Size(182, 26);
             btnSerialize.Text = "Serialized";
             btnSerialize.Click += serializedToolStripMenuItem1_Click;
             // 
             // btnDeserialize
             // 
             btnDeserialize.Name = "btnDeserialize";
-            btnDeserialize.Size = new Size(224, 26);
+            btnDeserialize.Size = new Size(182, 26);
             btnDeserialize.Text = "Deserialized";
             btnDeserialize.Click += btnDeserialize_Click;
             // 
             // btnExportToTXT
             // 
             btnExportToTXT.Name = "btnExportToTXT";
-            btnExportToTXT.Size = new Size(224, 26);
+            btnExportToTXT.Size = new Size(182, 26);
             btnExportToTXT.Text = "Export to TXT";
             btnExportToTXT.Click += btnExportToTXT_Click;
             // 
@@ -474,6 +514,10 @@
             tab.Size = new Size(640, 362);
             tab.TabIndex = 0;
             tab.Tag = "s";
+            // 
+            // printUtilizatori
+            // 
+            printUtilizatori.PrintPage += printUtilizatori_PrintPage;
             // 
             // Form2
             // 
@@ -495,6 +539,8 @@
             tabGrupuri.PerformLayout();
             tabUtilizatori.ResumeLayout(false);
             tabUtilizatori.PerformLayout();
+            toolStrip1.ResumeLayout(false);
+            toolStrip1.PerformLayout();
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             tab.ResumeLayout(false);
@@ -545,5 +591,9 @@
         private ToolStripMenuItem btnSerialize;
         private ToolStripMenuItem btnDeserialize;
         private ToolStripMenuItem btnExportToTXT;
+        private ToolStrip toolStrip1;
+        private ToolStripButton toolStripButton2;
+        private System.Drawing.Printing.PrintDocument printUtilizatori;
+        private ToolStripButton ChartToolStrip;
     }
 }

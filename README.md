@@ -39,14 +39,14 @@ Create forms for input / update / delete data
 ## 🧩 7. Menu Controls (0.50p)
 Use the following **menu UI components** (at least once each of them) and meaningfully:
 - [x] `MenuStrip`
-- [ ] `ToolStrip`
+- [x] `ToolStrip`
 - [ ] `StatusStrip`
 - [ ] `ContextMenuStrip`
 
 ---
 
 ## 📊 8. Custom Chart Drawing (0.50p)
-- [ ] Draw a chart using the ``System.Drawing.Graphics`` class, in order to represent some statistics that are meaningful for your application
+- [x] Draw a chart using the ``System.Drawing.Graphics`` class, in order to represent some statistics that are meaningful for your application
  -You should not use an existing chart control, like the one available in the ToolBox (the goal is to create such a control yourself). 
 - The control should be different from the ones available on http://github.com/liviucotfas (discussed during the course / during the labs). 
 - You can check the charts in Microsoft Excel for inspiration.
@@ -69,5 +69,5 @@ Use the following **menu UI components** (at least once each of them) and meanin
 ## 🧵 Bonus Features
 - [ ] 🔗 **Data Binding** (0.25p)
 - [ ] ⚙️ **Entity Framework - Code First** (0.50p)
-- [ ] 🖨️ **Print document with PrintPreview** (0.50p)
+- [X] 🖨️ **Print document with PrintPreview** (0.50p)
 - [ ] 🧲 **Drag & Drop or Clipboard** (0.25p)
