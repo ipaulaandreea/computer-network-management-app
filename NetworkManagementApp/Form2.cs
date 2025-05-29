@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using NetworkManagementApp.Model;
 
 
@@ -29,6 +30,41 @@ namespace NetworkManagementApp
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            deserializeXML();
+            var dreptCitire = new Drept(1, "Citire");
+            var dreptScriere = new Drept(2, "Scriere");
+            var dreptAdmin = new Drept(3, "Administrare");
+
+            drepturi = new List<Drept> { dreptCitire, dreptScriere, dreptAdmin };
+
+            var grupUser = new Grup(1, "User");
+            grupUser.AdaugaDrept(dreptCitire);
+
+            var grupEditor = new Grup(2, "Editor");
+            grupEditor.AdaugaDrept(dreptCitire);
+            grupEditor.AdaugaDrept(dreptScriere);
+
+            var grupAdmin = new Grup(3, "Admin");
+            grupAdmin.AdaugaDrept(dreptCitire);
+            grupAdmin.AdaugaDrept(dreptScriere);
+            grupAdmin.AdaugaDrept(dreptAdmin);
+
+            grupuri = new List<Grup> { grupUser, grupEditor, grupAdmin };
+
+            //var u1 = new Utilizator(1, "ana");
+            //u1.AdaugaGrup(grupUser);
+
+            //var u2 = new Utilizator(2, "bogdan");
+            //u2.AdaugaGrup(grupEditor);
+
+            //var u3 = new Utilizator(3, "carmen");
+            //u3.AdaugaGrup(grupAdmin);
+
+            //utilizatori = new List<Utilizator> { u1, u2, u3 };
+
+            RefreshGrupListBox();
+            RefreshGrupuriListView();
+            RefreshUsersListView();
             RefreshDreptList();
         }
 
@@ -226,7 +262,7 @@ namespace NetworkManagementApp
             }
         }
 
-            private void RefreshDreptList()
+        private void RefreshDreptList()
         {
             listView1.Items.Clear();
             foreach (var drept in drepturi)
@@ -481,6 +517,84 @@ namespace NetworkManagementApp
             else
             {
                 errorNumeGrup.SetError(tbNumeGrup, "");
+            }
+        }
+
+        private void Form2_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void serializedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Utilizator>));
+            FileStream stream = File.Create("utilizatori.xml");
+            try
+            {
+                serializer.Serialize(stream, utilizatori);
+            }
+            finally
+            {
+                stream.Dispose();
+            }
+
+        }
+
+        private void deserializeXML()
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Utilizator>));
+            try
+            {
+                using (FileStream stream = File.OpenRead("utilizatori.xml"))
+                {
+                    utilizatori = (List<Utilizator>)serializer.Deserialize(stream);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Fișierul de utilizatori nu a fost găsit. Asigurați-vă că a fost creat anterior.", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"A apărut o eroare la deserializarea fișierului: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            RefreshUsersListView();
+        }
+        private void btnDeserialize_Click(object sender, EventArgs e)
+        {
+            deserializeXML();
+        }
+
+        private void btnExportToTXT_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog.FileName = "utilizatori.txt";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
+                    {
+                        foreach (var user in utilizatori)
+                        {
+                            var grupuriStr = string.Join(", ", user.Grupuri.Select(g => g.Nume));
+                            var drepturiStr = string.Join(", ", user.GetDrepturi().Select(d => d.Nume));
+
+                            writer.WriteLine($"Nume: {user.Nume}");
+                            writer.WriteLine($"  Grupuri: {grupuriStr}");
+                            writer.WriteLine($"  Drepturi: {drepturiStr}");
+                            writer.WriteLine();
+                        }
+                    }
+
+                    MessageBox.Show("Export realizat cu succes!", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Eroare la export: " + ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }

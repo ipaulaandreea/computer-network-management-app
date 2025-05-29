@@ -27,18 +27,18 @@ Create forms for input / update / delete data
 ---
 
 ## 💾 5. Serialization (0.25p)
-- [ ] Add data **serialization/deserialization** for at least one class
+- [x] Add data **serialization/deserialization** for at least one class
 
 ---
 
 ## 📤 6. Export report to TXT (0.25p)
-- [ ] Provide an option to export a **report** as a `.txt` file in at least one place
+- [x] Provide an option to export a **report** as a `.txt` file in at least one place
 
 ---
 
 ## 🧩 7. Menu Controls (0.50p)
 Use the following **menu UI components** (at least once each of them) and meaningfully:
-- [ ] `MenuStrip`
+- [x] `MenuStrip`
 - [ ] `ToolStrip`
 - [ ] `StatusStrip`
 - [ ] `ContextMenuStrip`
