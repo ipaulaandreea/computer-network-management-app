@@ -16,7 +16,7 @@ Create forms for input / update / delete data
 ---
 
 ## ✅ 3. Data Validation (0.50p)
-- [ ] Add data validation (ErrorProvider control, Validating/Validated events, standard exceptions, custom exceptions)
+- [x] Add data validation (ErrorProvider control, Validating/Validated events, standard exceptions, custom exceptions)
   - At least one implementation required
 
 ---

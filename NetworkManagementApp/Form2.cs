@@ -18,10 +18,12 @@ namespace NetworkManagementApp
         List<Grup> grupuri = new();
         List<Drept> drepturi = new();
 
+
         public Form2()
         {
             InitializeComponent();
             Load += Form2_Load;
+
 
         }
 
@@ -60,6 +62,24 @@ namespace NetworkManagementApp
 
         }
 
+        public class NumeExistentException : Exception
+        {
+            public NumeExistentException(string entitate, string nume)
+                : base($"{entitate} cu numele '{nume}' există deja.") { }
+        }
+
+        public class DreptInFolosintaException : Exception
+        {
+            public DreptInFolosintaException(string numeDrept)
+                : base($"Dreptul '{numeDrept}' este asociat cu unul sau mai multe grupuri și nu poate fi șters.") { }
+        }
+
+        public class GrupInFolosintaException : Exception
+        {
+            public GrupInFolosintaException(string numeGrup)
+                : base($"Grupul '{numeGrup}' este asociat cu unul sau mai mulți utilizatori și nu poate fi șters.") { }
+        }
+
         private void RefreshUsersListView()
         {
             lvUtilizatori.Items.Clear();
@@ -78,35 +98,48 @@ namespace NetworkManagementApp
 
         private void btnAddUser_Click(object sender, EventArgs e)
         {
-            string nume = tbNume.Text.Trim();
-            if (string.IsNullOrWhiteSpace(nume)) return;
-
-            if (clbGrupuri.CheckedItems.Count == 0)
+            try
             {
-                MessageBox.Show("Selectați cel puțin un grup pentru utilizator.");
-                return;
-            }
+                if (!ValidateChildren()) return;
 
-            var user = new Utilizator(utilizatori.Count + 1, nume);
+                string nume = tbNume.Text.Trim();
 
-            foreach (var grupNume in clbGrupuri.CheckedItems)
-            {
-                var grup = grupuri.FirstOrDefault(g => g.Nume == grupNume.ToString());
-                if (grup != null)
+                if (utilizatori.Any(u => u.Nume.Equals(nume, StringComparison.OrdinalIgnoreCase)))
+                    throw new NumeExistentException("Utilizator", nume);
+
+                if (string.IsNullOrWhiteSpace(nume)) return;
+
+                if (clbGrupuri.CheckedItems.Count == 0)
                 {
-                    user.AdaugaGrup(grup);
+                    MessageBox.Show("Selectați cel puțin un grup pentru utilizator.");
+                    return;
                 }
+
+                var user = new Utilizator(utilizatori.Count + 1, nume);
+
+                foreach (var grupNume in clbGrupuri.CheckedItems)
+                {
+                    var grup = grupuri.FirstOrDefault(g => g.Nume == grupNume.ToString());
+                    if (grup != null)
+                    {
+                        user.AdaugaGrup(grup);
+                    }
+                }
+
+                utilizatori.Add(user);
+                RefreshUsersListView();
+
+                tbNume.Clear();
+
+                // Resetare selecții grupuri
+                for (int i = 0; i < clbGrupuri.Items.Count; i++)
+                    clbGrupuri.SetItemChecked(i, false);
+                clbGrupuri.ClearSelected();
             }
-
-            utilizatori.Add(user);
-            RefreshUsersListView();
-
-            tbNume.Clear();
-
-            // Resetare selecții grupuri
-            for (int i = 0; i < clbGrupuri.Items.Count; i++)
-                clbGrupuri.SetItemChecked(i, false);
-            clbGrupuri.ClearSelected();
+            catch (NumeExistentException ex)
+            {
+                MessageBox.Show(ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void RefreshGrupuriListView()
@@ -168,17 +201,32 @@ namespace NetworkManagementApp
 
         private void btnAddDrept_Click(object sender, EventArgs e)
         {
-            string nume = textBox1.Text.Trim();
-            if (string.IsNullOrWhiteSpace(nume)) return;
+            try
+            {
+                string nume = textBox1.Text.Trim();
+                if (string.IsNullOrWhiteSpace(nume))
+                    throw new ArgumentException("Numele dreptului nu poate fi gol.");
 
-            var drept = new Drept(drepturi.Count + 1, nume);
-            drepturi.Add(drept);
-            RefreshDreptList();
-            textBox1.Clear();
+                if (drepturi.Any(d => d.Nume.Equals(nume, StringComparison.OrdinalIgnoreCase)))
+                    throw new NumeExistentException("Drept", nume);
 
+                var drept = new Drept(drepturi.Count + 1, nume);
+                drepturi.Add(drept);
+                RefreshDreptList();
+                textBox1.Clear();
+
+            }
+            catch (ArgumentException ex)
+            {
+                errorNumeDrept.SetError(textBox1, ex.Message);
+            }
+            catch (NumeExistentException ex)
+            {
+                MessageBox.Show(ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
-        private void RefreshDreptList()
+            private void RefreshDreptList()
         {
             listView1.Items.Clear();
             foreach (var drept in drepturi)
@@ -210,20 +258,32 @@ namespace NetworkManagementApp
 
         private void btnDeleteDrept_Click(object sender, EventArgs e)
         {
-            if (listView1.SelectedItems.Count == 0) return;
-
-            var item = listView1.SelectedItems[0];
-            var numeDrept = item.Text;
-
-            var result = MessageBox.Show($"Ești sigur că vrei să ștergi dreptul '{numeDrept}'?", "Confirmare ștergere", MessageBoxButtons.YesNo);
-            if (result == DialogResult.Yes)
+            try
             {
-                var drept = drepturi.FirstOrDefault(d => d.Nume == numeDrept);
-                if (drept != null)
+                if (listView1.SelectedItems.Count == 0) return;
+
+                var item = listView1.SelectedItems[0];
+                var numeDrept = item.Text;
+
+                var result = MessageBox.Show($"Ești sigur că vrei să ștergi dreptul '{numeDrept}'?", "Confirmare ștergere", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
                 {
-                    drepturi.Remove(drept);
-                    RefreshDreptList();
+                    var drept = drepturi.FirstOrDefault(d => d.Nume == numeDrept);
+                    if (drept == null) return;
+
+
+                    if (grupuri.Any(g => g.Drepturi.Contains(drept)))
+                        throw new DreptInFolosintaException(numeDrept);
+                    if (drept != null)
+                    {
+                        drepturi.Remove(drept);
+                        RefreshDreptList();
+                    }
                 }
+            }
+            catch (DreptInFolosintaException ex)
+            {
+                MessageBox.Show(ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -252,31 +312,42 @@ namespace NetworkManagementApp
 
         private void btnStergeGrup_Click(object sender, EventArgs e)
         {
-            if (lvGrupuri.SelectedItems.Count == 0)
+            try
             {
-                MessageBox.Show("Selectați un grup pentru a-l șterge.");
-                return;
-            }
-
-            var item = lvGrupuri.SelectedItems[0];
-            var numeGrup = item.Text;
-
-            var confirmare = MessageBox.Show($"Ești sigur că vrei să ștergi grupul '{numeGrup}'?", "Confirmare ștergere", MessageBoxButtons.YesNo);
-            if (confirmare == DialogResult.Yes)
-            {
-                var grup = grupuri.FirstOrDefault(g => g.Nume == numeGrup);
-                if (grup != null)
+                if (lvGrupuri.SelectedItems.Count == 0)
                 {
-                    foreach (var user in utilizatori)
-                    {
-                        user.Grupuri.Remove(grup);
-                    }
-
-                    grupuri.Remove(grup);
-                    RefreshGrupuriListView();
-                    RefreshGrupListBox();
-                    RefreshUsersListView();
+                    MessageBox.Show("Selectați un grup pentru a-l șterge.");
+                    return;
                 }
+
+                var item = lvGrupuri.SelectedItems[0];
+                var numeGrup = item.Text;
+
+                var confirmare = MessageBox.Show($"Ești sigur că vrei să ștergi grupul '{numeGrup}'?", "Confirmare ștergere", MessageBoxButtons.YesNo);
+                if (confirmare == DialogResult.Yes)
+                {
+                    var grup = grupuri.FirstOrDefault(g => g.Nume == numeGrup);
+                    if (grup == null) return;
+
+                    if (utilizatori.Any(u => u.Grupuri.Contains(grup)))
+                        throw new GrupInFolosintaException(numeGrup);
+                    if (grup != null)
+                    {
+                        foreach (var user in utilizatori)
+                        {
+                            user.Grupuri.Remove(grup);
+                        }
+
+                        grupuri.Remove(grup);
+                        RefreshGrupuriListView();
+                        RefreshGrupListBox();
+                        RefreshUsersListView();
+                    }
+                }
+            }
+            catch (GrupInFolosintaException ex)
+            {
+                MessageBox.Show(ex.Message, "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -384,9 +455,33 @@ namespace NetworkManagementApp
                 if (utilizator != null)
                 {
                     utilizatori.Remove(utilizator);
-                    RefreshUsersListView(); 
+                    RefreshUsersListView();
                 }
             }
         }
+
+        private void tbNume_Validating(object sender, CancelEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(tbNume.Text))
+            {
+                errorNumeUtilizator.SetError(tbNume, "Numele utilizatorului nu poate fi gol.");
+            }
+            else
+            {
+                errorNumeUtilizator.SetError(tbNume, "");
+            }
         }
+
+        private void tbNumeGrup_Validating(object sender, CancelEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(tbNumeGrup.Text))
+            {
+                errorNumeGrup.SetError(tbNumeGrup, "Numele grupului nu poate fi gol.");
+            }
+            else
+            {
+                errorNumeGrup.SetError(tbNumeGrup, "");
+            }
+        }
+    }
 }

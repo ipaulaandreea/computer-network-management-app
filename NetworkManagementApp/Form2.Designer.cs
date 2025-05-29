@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             tab = new TabControl();
             tabUtilizatori = new TabPage();
             clbGrupuri = new CheckedListBox();
@@ -61,10 +62,16 @@
             lableDrept = new Label();
             listView1 = new ListView();
             columnHeader6 = new ColumnHeader();
+            errorNumeUtilizator = new ErrorProvider(components);
+            errorNumeGrup = new ErrorProvider(components);
+            errorNumeDrept = new ErrorProvider(components);
             tab.SuspendLayout();
             tabUtilizatori.SuspendLayout();
             tabGrupuri.SuspendLayout();
             tabDrepturi.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)errorNumeUtilizator).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorNumeGrup).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorNumeDrept).BeginInit();
             SuspendLayout();
             // 
             // tab
@@ -157,8 +164,6 @@
             btnEditUser.Text = "Modifica Utilizator";
             btnEditUser.UseVisualStyleBackColor = true;
             btnEditUser.Click += btnEditUser_Click;
-            btnDeleteUser.Click += btnDeleteUser_Click;
-
             // 
             // btnAddUser
             // 
@@ -178,6 +183,7 @@
             tbNume.Name = "tbNume";
             tbNume.Size = new Size(166, 27);
             tbNume.TabIndex = 3;
+            tbNume.Validating += tbNume_Validating;
             // 
             // labelGrup
             // 
@@ -269,6 +275,7 @@
             tbNumeGrup.Name = "tbNumeGrup";
             tbNumeGrup.Size = new Size(166, 27);
             tbNumeGrup.TabIndex = 14;
+            tbNumeGrup.Validating += tbNumeGrup_Validating;
             // 
             // labelDrept
             // 
@@ -411,6 +418,18 @@
             columnHeader6.Text = "Nume Drept";
             columnHeader6.Width = 767;
             // 
+            // errorNumeUtilizator
+            // 
+            errorNumeUtilizator.ContainerControl = this;
+            // 
+            // errorNumeGrup
+            // 
+            errorNumeGrup.ContainerControl = this;
+            // 
+            // errorNumeDrept
+            // 
+            errorNumeDrept.ContainerControl = this;
+            // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -427,6 +446,9 @@
             tabGrupuri.PerformLayout();
             tabDrepturi.ResumeLayout(false);
             tabDrepturi.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)errorNumeUtilizator).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorNumeGrup).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorNumeDrept).EndInit();
             ResumeLayout(false);
         }
 
@@ -467,5 +489,8 @@
         private ColumnHeader columnHeader6;
         private CheckedListBox clbDrepturi;
         private CheckedListBox clbGrupuri;
+        private ErrorProvider errorNumeUtilizator;
+        private ErrorProvider errorNumeGrup;
+        private ErrorProvider errorNumeDrept;
     }
 }
