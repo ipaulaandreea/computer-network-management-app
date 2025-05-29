@@ -20,3 +20,11 @@ C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\ob
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.EditUserForm.resources
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.Properties.Resources.resources
 C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.ChartFormcs.resources
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkManagementApp.csproj.AssemblyReference.cache
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\bin\Debug\net8.0-windows\SQLitePCLRaw.core.dll
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\bin\Debug\net8.0-windows\System.Data.SQLite.dll
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\bin\Debug\net8.0-windows\runtimes\linux-x64\native\SQLite.Interop.dll
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\bin\Debug\net8.0-windows\runtimes\osx-x64\native\SQLite.Interop.dll
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\bin\Debug\net8.0-windows\runtimes\win-x64\native\SQLite.Interop.dll
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\bin\Debug\net8.0-windows\runtimes\win-x86\native\SQLite.Interop.dll
+C:\Users\andre\coding\C#\computer-network-management-app\NetworkManagementApp\obj\Debug\net8.0-windows\NetworkM.825D2887.Up2Date

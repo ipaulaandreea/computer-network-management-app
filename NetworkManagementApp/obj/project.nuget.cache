@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "hGaa+NxaYIk=",
+  "dgSpecHash": "3FC5KGAEr1k=",
   "success": true,
   "projectFilePath": "C:\\Users\\andre\\coding\\C#\\computer-network-management-app\\NetworkManagementApp\\NetworkManagementApp.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\andre\\.nuget\\packages\\sqlitepclraw.core\\2.1.11\\sqlitepclraw.core.2.1.11.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\stub.system.data.sqlite.core.netstandard\\1.0.119\\stub.system.data.sqlite.core.netstandard.1.0.119.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\system.data.sqlite.core\\1.0.119\\system.data.sqlite.core.1.0.119.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512"
+  ],
   "logs": []
 }

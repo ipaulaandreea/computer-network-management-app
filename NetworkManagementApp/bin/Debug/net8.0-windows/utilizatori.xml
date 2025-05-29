@@ -2,62 +2,20 @@
 <ArrayOfUtilizator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Utilizator>
     <Id>1</Id>
-    <Nume>ana</Nume>
+    <Nume>dev12</Nume>
     <Grupuri>
       <Grup>
-        <Id>1</Id>
-        <Nume>User</Nume>
+        <Id>4</Id>
+        <Nume>Programatori</Nume>
         <Utilizatori />
         <Drepturi>
           <Drept>
             <Id>1</Id>
-            <Nume>Citire</Nume>
-          </Drept>
-        </Drepturi>
-      </Grup>
-    </Grupuri>
-  </Utilizator>
-  <Utilizator>
-    <Id>2</Id>
-    <Nume>bogdan</Nume>
-    <Grupuri>
-      <Grup>
-        <Id>2</Id>
-        <Nume>Editor</Nume>
-        <Utilizatori />
-        <Drepturi>
-          <Drept>
-            <Id>1</Id>
-            <Nume>Citire</Nume>
-          </Drept>
-          <Drept>
-            <Id>2</Id>
-            <Nume>Scriere</Nume>
-          </Drept>
-        </Drepturi>
-      </Grup>
-    </Grupuri>
-  </Utilizator>
-  <Utilizator>
-    <Id>3</Id>
-    <Nume>carmen</Nume>
-    <Grupuri>
-      <Grup>
-        <Id>3</Id>
-        <Nume>Admin</Nume>
-        <Utilizatori />
-        <Drepturi>
-          <Drept>
-            <Id>1</Id>
-            <Nume>Citire</Nume>
-          </Drept>
-          <Drept>
-            <Id>2</Id>
             <Nume>Scriere</Nume>
           </Drept>
           <Drept>
-            <Id>3</Id>
-            <Nume>Administrare</Nume>
+            <Id>2</Id>
+            <Nume>Citire</Nume>
           </Drept>
         </Drepturi>
       </Grup>

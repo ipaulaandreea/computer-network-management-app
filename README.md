@@ -54,7 +54,7 @@ Use the following **menu UI components** (at least once each of them) and meanin
 ---
 
 ## 🗃️ 9. Database Integration (2.00p)
-- [ ] Use a **relational database** for at least 2 entities  
+- [x ] Use a **relational database** for at least 2 entities  
   - Implement full CRUD (insert, read, update, delete)
 
 ---
