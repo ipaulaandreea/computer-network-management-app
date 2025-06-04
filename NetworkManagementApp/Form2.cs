@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 using NetworkManagementApp.Model;
 using System.Data.SQLite;
@@ -21,13 +13,14 @@ namespace NetworkManagementApp
         List<Drept> drepturi = new();
         private string ConnectionString = "Data Source = network-management-app.db";
 
+        private string loggedUser = "guest";
+
 
 
         public Form2()
         {
             InitializeComponent();
             Load += Form2_Load;
-
 
         }
 
@@ -79,7 +72,6 @@ namespace NetworkManagementApp
 
                         var grup = new Grup(grupId, numeGrup);
 
-                        // Citește drepturile pentru acest grup
                         using (var cmdDrepturi = new SQLiteCommand(queryDrepturi, connection))
                         {
                             cmdDrepturi.Parameters.AddWithValue("@GrupId", grupId);
@@ -100,7 +92,6 @@ namespace NetworkManagementApp
                 }
             }
 
-            // Afișează în UI
             RefreshGrupuriListView();
             RefreshGrupListBox();
         }
@@ -130,7 +121,6 @@ namespace NetworkManagementApp
 
                         var user = new Utilizator(userId, nume);
 
-                        // Citește grupurile utilizatorului
                         using (var cmdGrupuri = new SQLiteCommand(queryGrupuri, connection))
                         {
                             cmdGrupuri.Parameters.AddWithValue("@UserId", userId);
@@ -162,38 +152,11 @@ namespace NetworkManagementApp
         private void Form2_Load(object sender, EventArgs e)
         {
             deserializeXML();
-            //var dreptCitire = new Drept(1, "Citire");
-            //var dreptScriere = new Drept(2, "Scriere");
-            //var dreptAdmin = new Drept(3, "Administrare");
+            auth1.LoginRequested += LoginControl1_LoginRequested;
 
             LoadDrepturiFromDatabase();
             LoadGrupuriFromDatabase();
             LoadUtilizatoriFromDatabase();
-
-            //var grupUser = new Grup(1, "User");
-            //grupUser.AdaugaDrept(dreptCitire);
-
-            //var grupEditor = new Grup(2, "Editor");
-            //grupEditor.AdaugaDrept(dreptCitire);
-            //grupEditor.AdaugaDrept(dreptScriere);
-
-            //var grupAdmin = new Grup(3, "Admin");
-            //grupAdmin.AdaugaDrept(dreptCitire);
-            //grupAdmin.AdaugaDrept(dreptScriere);
-            //grupAdmin.AdaugaDrept(dreptAdmin);
-
-            //grupuri = new List<Grup> { grupUser, grupEditor, grupAdmin };
-
-            //var u1 = new Utilizator(1, "ana");
-            //u1.AdaugaGrup(grupUser);
-
-            //var u2 = new Utilizator(2, "bogdan");
-            //u2.AdaugaGrup(grupEditor);
-
-            //var u3 = new Utilizator(3, "carmen");
-            //u3.AdaugaGrup(grupAdmin);
-
-            //utilizatori = new List<Utilizator> { u1, u2, u3 };
 
             RefreshGrupListBox();
             RefreshGrupuriListView();
@@ -201,12 +164,26 @@ namespace NetworkManagementApp
             RefreshDreptList();
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void LoginControl1_LoginRequested(object sender, (string Username, string Password) e)
         {
+            string username = e.Username.Trim();
+            string password = e.Password.Trim();
 
+            if (username == "admin" && password == "1234")
+            {
+                loggedUser = "admin";
+                statusUser.Text = $"Logged user: {loggedUser}";
+                MessageBox.Show("Autentificare reușită!", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                loggedUser = "guest";
+                statusUser.Text = $"Logged user: {loggedUser}";
+                MessageBox.Show("Utilizator sau parolă greșită.", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        private void label1_Click_1(object sender, EventArgs e)
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
@@ -515,7 +492,7 @@ namespace NetworkManagementApp
                 var item = listView1.SelectedItems[0];
                 var numeDrept = item.Text;
 
-                var result = MessageBox.Show($"Ești sigur că vrei să ștergi dreptul '{numeDrept}'?", "Confirmare ștergere", MessageBoxButtons.YesNo);
+                var result = MessageBox.Show($"Esti sigur ca vrei sa stergi dreptul '{numeDrept}'?", "Confirmare stergere", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
                     var drept = drepturi.FirstOrDefault(d => d.Nume == numeDrept);
@@ -524,7 +501,6 @@ namespace NetworkManagementApp
                     if (grupuri.Any(g => g.Drepturi.Contains(drept)))
                         throw new DreptInFolosintaException(numeDrept);
 
-                    // Ștergere din baza de date
                     string query = "DELETE FROM drepturi WHERE nume = @Nume";
                     using (var connection = new SQLiteConnection(ConnectionString))
                     {
@@ -713,7 +689,6 @@ namespace NetworkManagementApp
                         }
                     }
 
-                    // Actualizare în memorie
                     grup.Nume = numeNou;
                     grup.Drepturi.Clear();
                     foreach (var dreptNume in formEdit.DrepturiSelectate)
@@ -972,25 +947,6 @@ namespace NetworkManagementApp
             }
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolStripButton1_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolStripButton1_Click_2(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolStripTextBox1_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
@@ -1021,8 +977,8 @@ namespace NetworkManagementApp
 
         private void ChartToolStrip_Click(object sender, EventArgs e)
         {
-            var chartForm = new ChartFormcs(grupuri, utilizatori);
-            chartForm.ShowDialog(); 
+            var chartForm = new ChartForm(grupuri, utilizatori);
+            chartForm.ShowDialog();
         }
     }
 }

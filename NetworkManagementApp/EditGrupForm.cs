@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data;
 using NetworkManagementApp.Model;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace NetworkManagementApp
 {
     public partial class EditGrupForm : Form
     {
-
-        //private TextBox tbEditNumeGrup;
-        //private Button btnSalveaza;
 
         public string NumeGrup { get; private set; }
         public List<string> DrepturiSelectate { get; private set; } = new();
@@ -48,7 +36,6 @@ namespace NetworkManagementApp
 
             if (!string.IsNullOrWhiteSpace(NumeGrup))
             {
-                // Salvează drepturile bifate din clbEditDrepturi
                 DrepturiSelectate = clbEditDrepturi.CheckedItems
                     .Cast<string>()
                     .ToList();

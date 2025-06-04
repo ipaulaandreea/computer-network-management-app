@@ -74,7 +74,11 @@
             btnDeserialize = new ToolStripMenuItem();
             btnExportToTXT = new ToolStripMenuItem();
             tab = new TabControl();
+            tabAuth = new TabPage();
+            auth1 = new WinFormsApp1.Auth();
             printUtilizatori = new System.Drawing.Printing.PrintDocument();
+            statusStrip1 = new StatusStrip();
+            statusUser = new ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)errorNumeUtilizator).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorNumeGrup).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorNumeDrept).BeginInit();
@@ -84,6 +88,8 @@
             toolStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
             tab.SuspendLayout();
+            tabAuth.SuspendLayout();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // errorNumeUtilizator
@@ -359,7 +365,7 @@
             ChartToolStrip.Image = (Image)resources.GetObject("ChartToolStrip.Image");
             ChartToolStrip.ImageTransparentColor = Color.Magenta;
             ChartToolStrip.Name = "ChartToolStrip";
-            ChartToolStrip.Size = new Size(37, 24);
+            ChartToolStrip.Size = new Size(32, 24);
             ChartToolStrip.Text = "📊";
             ChartToolStrip.ToolTipText = "Genereaza Chart";
             ChartToolStrip.Click += ChartToolStrip_Click;
@@ -507,6 +513,7 @@
             tab.Controls.Add(tabUtilizatori);
             tab.Controls.Add(tabGrupuri);
             tab.Controls.Add(tabDrepturi);
+            tab.Controls.Add(tabAuth);
             tab.Location = new Point(0, 0);
             tab.Margin = new Padding(2);
             tab.Name = "tab";
@@ -515,15 +522,50 @@
             tab.TabIndex = 0;
             tab.Tag = "s";
             // 
+            // tabAuth
+            // 
+            tabAuth.Controls.Add(auth1);
+            tabAuth.Location = new Point(4, 29);
+            tabAuth.Name = "tabAuth";
+            tabAuth.Padding = new Padding(3);
+            tabAuth.Size = new Size(632, 329);
+            tabAuth.TabIndex = 3;
+            tabAuth.Text = "Login";
+            tabAuth.UseVisualStyleBackColor = true;
+            // 
+            // auth1
+            // 
+            auth1.Location = new Point(97, 40);
+            auth1.Name = "auth1";
+            auth1.Size = new Size(422, 224);
+            auth1.TabIndex = 0;
+            // 
             // printUtilizatori
             // 
             printUtilizatori.PrintPage += printUtilizatori_PrintPage;
+            // 
+            // statusStrip1
+            // 
+            statusStrip1.ImageScalingSize = new Size(20, 20);
+            statusStrip1.Items.AddRange(new ToolStripItem[] { statusUser });
+            statusStrip1.Location = new Point(0, 361);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(640, 26);
+            statusStrip1.TabIndex = 1;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // statusUser
+            // 
+            statusUser.Name = "statusUser";
+            statusUser.Size = new Size(134, 20);
+            statusUser.Text = "Logged user: guest";
             // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(640, 373);
+            ClientSize = new Size(640, 387);
+            Controls.Add(statusStrip1);
             Controls.Add(tab);
             MainMenuStrip = menuStrip1;
             Margin = new Padding(2);
@@ -544,7 +586,11 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             tab.ResumeLayout(false);
+            tabAuth.ResumeLayout(false);
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -595,5 +641,9 @@
         private ToolStripButton toolStripButton2;
         private System.Drawing.Printing.PrintDocument printUtilizatori;
         private ToolStripButton ChartToolStrip;
+        private TabPage tabAuth;
+        private WinFormsApp1.Auth auth1;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel statusUser;
     }
 }

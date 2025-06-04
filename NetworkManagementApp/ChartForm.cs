@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data;
 using NetworkManagementApp.Model;
 
 namespace NetworkManagementApp
 {
-    public partial class ChartFormcs : Form
+    public partial class ChartForm : Form
     {
         private List<Grup> grupuri;
         private List<Utilizator> utilizatori;
-        public ChartFormcs(List<Grup> grupuri, List<Utilizator> utilizatori)
+        public ChartForm(List<Grup> grupuri, List<Utilizator> utilizatori)
         {
             InitializeComponent();
             this.grupuri = grupuri;
@@ -88,10 +80,5 @@ namespace NetworkManagementApp
             g.DrawLine(penAxis, padding, panelHistograma.Height - padding, panelHistograma.Width - padding, panelHistograma.Height - padding);
             g.DrawLine(penAxis, padding, padding, padding, panelHistograma.Height - padding);
         }
-
-        //private void panelHistograma_Paint(object sender, PaintEventArgs e)
-        //{
-
-        //}
     }
 }

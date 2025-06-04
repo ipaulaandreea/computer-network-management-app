@@ -1,6 +1,6 @@
 ﻿namespace NetworkManagementApp
 {
-    partial class ChartFormcs
+    partial class ChartForm
     {
         /// <summary>
         /// Required designer variable.
@@ -39,14 +39,13 @@
             panelHistograma.TabIndex = 0;
             panelHistograma.Paint += ChartFormcs_Paint;
             // 
-            // ChartFormcs
+            // ChartForm
             // 
             AutoScaleMode = AutoScaleMode.None;
             ClientSize = new Size(528, 373);
             Controls.Add(panelHistograma);
-            Name = "ChartFormcs";
-            Text = "ChartFormcs";
-            //Paint += ChartFormcs_Paint;
+            Name = "ChartForm";
+            Text = "ChartForm";
             ResumeLayout(false);
         }
 

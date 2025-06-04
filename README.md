@@ -40,7 +40,7 @@ Create forms for input / update / delete data
 Use the following **menu UI components** (at least once each of them) and meaningfully:
 - [x] `MenuStrip`
 - [x] `ToolStrip`
-- [ ] `StatusStrip`
+- [x] `StatusStrip`
 - [ ] `ContextMenuStrip`
 
 ---
@@ -54,20 +54,21 @@ Use the following **menu UI components** (at least once each of them) and meanin
 ---
 
 ## 🗃️ 9. Database Integration (2.00p)
-- [x ] Use a **relational database** for at least 2 entities  
+- [x] Use a **relational database** for at least 2 entities  
   - Implement full CRUD (insert, read, update, delete)
 
 ---
 
 ## 🧱 10. Reusable UserControl (1.00p)
-- [ ]  Implement a ``UserControl`` in a separate project (so that it can be easily used in several projects and distributed to other developers) and use it in your app. 
+- [x]  Implement a ``UserControl`` in a separate project (so that it can be easily used in several projects and distributed to other developers) and use it in your app. 
 - The UserControl should provide a useful functionality for your app (ex: don't implement a control showing the current time).
 - please don't copy&paste a clock usercontrol from the internet ;) 
 
 ---
+- [x] 🖨️ **Print document with PrintPreview** (0.50p)
+- [ ] 🧲 **Drag & Drop or Clipboard** (0.25p)
 
 ## 🧵 Bonus Features
 - [ ] 🔗 **Data Binding** (0.25p)
 - [ ] ⚙️ **Entity Framework - Code First** (0.50p)
-- [X] 🖨️ **Print document with PrintPreview** (0.50p)
-- [ ] 🧲 **Drag & Drop or Clipboard** (0.25p)
+
