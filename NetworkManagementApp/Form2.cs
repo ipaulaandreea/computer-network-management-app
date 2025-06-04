@@ -11,7 +11,7 @@ namespace NetworkManagementApp
         List<Utilizator> utilizatori = new();
         List<Grup> grupuri = new();
         List<Drept> drepturi = new();
-        private string ConnectionString = "Data Source = network-management-app.db";
+        private string ConnectionString = "Data Source=" + Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\DataSource\network-management-app.db");
 
         private string loggedUser = "guest";
 
@@ -151,7 +151,6 @@ namespace NetworkManagementApp
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            deserializeXML();
             auth1.LoginRequested += LoginControl1_LoginRequested;
 
             LoadDrepturiFromDatabase();
@@ -874,39 +873,56 @@ namespace NetworkManagementApp
 
         private void serializedToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Utilizator>));
-            FileStream stream = File.Create("utilizatori.xml");
-            try
-            {
-                serializer.Serialize(stream, utilizatori);
-            }
-            finally
-            {
-                stream.Dispose();
-            }
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
+            saveFileDialog.Title = "Salvează utilizatorii în XML";
+            saveFileDialog.FileName = "utilizatori.xml";
 
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    using (FileStream stream = new FileStream(saveFileDialog.FileName, FileMode.Create))
+                    {
+                        XmlSerializer serializer = new XmlSerializer(typeof(List<Utilizator>));
+                        serializer.Serialize(stream, utilizatori);
+                    }
+
+                    MessageBox.Show("Fișierul a fost salvat cu succes!", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Eroare la salvare: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void deserializeXML()
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Utilizator>));
-            try
-            {
-                using (FileStream stream = File.OpenRead("utilizatori.xml"))
-                {
-                    utilizatori = (List<Utilizator>)serializer.Deserialize(stream);
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                MessageBox.Show("Fișierul de utilizatori nu a fost găsit. Asigurați-vă că a fost creat anterior.", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"A apărut o eroare la deserializarea fișierului: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
+            openFileDialog.Title = "Deschide fișierul utilizatori.xml";
 
-            RefreshUsersListView();
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Utilizator>));
+
+                try
+                {
+                    using (FileStream stream = File.OpenRead(openFileDialog.FileName))
+                    {
+                        utilizatori = (List<Utilizator>)serializer.Deserialize(stream);
+                    }
+
+                    MessageBox.Show("Datele au fost încărcate cu succes!", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"A apărut o eroare la deserializare: {ex.Message}", "Eroare", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                RefreshUsersListView();
+            }
         }
         private void btnDeserialize_Click(object sender, EventArgs e)
         {
