@@ -228,12 +228,13 @@ namespace NetworkManagementApp
 
         private void RefreshUsersListView()
         {
-            lvUtilizatori.Items.Clear();
+            lvUtilizatori.Items.Clear();    
             foreach (var user in utilizatori)
             {
                 var grupuriStr = string.Join(", ", user.Grupuri.Select(g => g.Nume));
-                var drepturiStr = string.Join(", ", user.GetDrepturi().Select(d => d.Nume));
-
+                var drepturiStr = string.Join(", ", user.GetDrepturi()
+                    .Select(d => d.Nume)
+                    .Distinct());
                 var item = new ListViewItem(user.Nume);
                 item.SubItems.Add(grupuriStr);
                 item.SubItems.Add(drepturiStr);
@@ -571,10 +572,6 @@ namespace NetworkManagementApp
             }
         }
 
-        private void lbDrepturiGrup_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void btnStergeGrup_Click(object sender, EventArgs e)
         {
@@ -671,14 +668,13 @@ namespace NetworkManagementApp
                             cmdDeleteDrepturi.Parameters.AddWithValue("@Id", grup.Id);
                             cmdDeleteDrepturi.ExecuteNonQuery();
 
-                            foreach (var dreptNume in formEdit.DrepturiSelectate)
+                            foreach (var dreptNume in formEdit.DrepturiSelectate.Distinct())
                             {
                                 var drept = drepturi.FirstOrDefault(d => d.Nume == dreptNume);
                                 if (drept != null)
                                 {
                                     var cmdInsert = new SQLiteCommand(
-                                        "INSERT INTO grupuri_drepturi (grup_id, drept_id) VALUES (@GrupId, @DreptId)",
-                                        connection);
+                                        "INSERT INTO grupuri_drepturi (grup_id, drept_id) VALUES (@GrupId, @DreptId)", connection);
                                     cmdInsert.Parameters.AddWithValue("@GrupId", grup.Id);
                                     cmdInsert.Parameters.AddWithValue("@DreptId", drept.Id);
                                     cmdInsert.ExecuteNonQuery();
@@ -691,7 +687,7 @@ namespace NetworkManagementApp
 
                     grup.Nume = numeNou;
                     grup.Drepturi.Clear();
-                    foreach (var dreptNume in formEdit.DrepturiSelectate)
+                    foreach (var dreptNume in formEdit.DrepturiSelectate.Distinct())
                     {
                         var drept = drepturi.FirstOrDefault(d => d.Nume == dreptNume);
                         if (drept != null)
@@ -701,6 +697,8 @@ namespace NetworkManagementApp
                     RefreshGrupuriListView();
                     RefreshGrupListBox();
                     RefreshUsersListView();
+
+                    MessageBox.Show("Grupul a fost modificat cu succes.", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {

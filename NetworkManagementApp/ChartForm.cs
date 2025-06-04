@@ -1,84 +1,90 @@
-﻿using System.Data;
-using NetworkManagementApp.Model;
+﻿using NetworkManagementApp.Model;
 
 namespace NetworkManagementApp
 {
     public partial class ChartForm : Form
     {
-        private List<Grup> grupuri;
         private List<Utilizator> utilizatori;
+        private List<Grup> grupuri;
+
+        private Panel panelLineChart;
+
         public ChartForm(List<Grup> grupuri, List<Utilizator> utilizatori)
         {
             InitializeComponent();
-            this.grupuri = grupuri;
             this.utilizatori = utilizatori;
+            this.grupuri = grupuri;
+            InitializeLayout();
+        }
 
+        private void InitializeLayout()
+        {
+            panelLineChart = new Panel();
+            panelLineChart.Dock = DockStyle.Fill;
+            panelLineChart.BackColor = Color.White;
+            panelLineChart.Paint += ChartFormcs_Paint;
+            this.Controls.Add(panelLineChart);
         }
 
         private void ChartFormcs_Paint(object sender, PaintEventArgs e)
         {
-            var g = e.Graphics;
+            Graphics g = e.Graphics;
             g.Clear(Color.White);
 
-            int padding = 60;
-            int nrEticheteY = 5;
-            var font = new Font("Arial", 10);
-            var fontBold = new Font("Arial", 10, FontStyle.Bold);
-            var brushBar = new SolidBrush(Color.CornflowerBlue);
+            var font = new Font("Arial", 7);
+            var fontBold = new Font("Arial", 8, FontStyle.Bold);
+            var brushBar = new SolidBrush(Color.DeepSkyBlue);
             var penAxis = new Pen(Color.Black, 2);
 
-            e.Graphics.DrawString("Histograma: Numar drepturi per utilizator", fontBold, Brushes.Black, new PointF(50, 20));
+            var data = grupuri
+                .Select(gp => new { Name = gp.Nume, Count = gp.Drepturi.Count })
+                .OrderBy(g => g.Count)
+                .ToList();
 
-            string labelX = "Numar drepturi";
-            var sizeX = e.Graphics.MeasureString(labelX, font);
-            e.Graphics.DrawString(labelX, font, Brushes.Black,
-                new PointF((panelHistograma.Width - sizeX.Width) / 2, panelHistograma.Height - 20));
+            if (data.Count == 0) return;
 
-            string labelY = "Numar utilizatori";
-            var sizeY = e.Graphics.MeasureString(labelY, font);
-            g.TranslateTransform(10, (panelHistograma.Height + sizeY.Width) / 2);
-            g.RotateTransform(-90);
-            g.DrawString(labelY, font, Brushes.Black, 0, 0);
-            g.ResetTransform();
+            int maxLabelWidth = data.Max(d => (int)g.MeasureString(d.Name, font).Width);
 
-            var histogramData = utilizatori
-                .GroupBy(u => u.GetDrepturi().Count)
-                .OrderBy(gp => gp.Key)
-                .ToDictionary(gp => gp.Key, gp => gp.Count());
+            int barHeight = 10;
+            int barSpacing = 7;
+            int maxBarLength = 200; 
+            int paddingLeft = maxLabelWidth + 30;
+            int paddingTop = 60;
+            int maxVal = Math.Max(1, data.Max(d => d.Count));
 
-            int barCount = histogramData.Count;
-            int barWidth = (panelHistograma.Width - 2 * padding) / barCount;
-            int maxVal = histogramData.Values.Max();
-            int maxHeight = panelHistograma.Height - 2 * padding;
+            g.DrawString("Drepturi pe grup", fontBold, Brushes.Black, paddingLeft, 25);
 
-            for (int j = 0; j <= nrEticheteY; j++)
+            for (int i = 0; i < data.Count; i++)
             {
-                int val = j * maxVal / nrEticheteY;
-                float yEticheta = panelHistograma.Height - padding - ((float)val / maxVal * maxHeight);
+                var group = data[i];
+                float y = paddingTop + i * (barHeight + barSpacing);
+                float barLength = group.Count * maxBarLength / (float)maxVal;
 
-                e.Graphics.DrawLine(Pens.Gray, padding - 5, yEticheta, padding, yEticheta);
-                e.Graphics.DrawString(val.ToString(), font, Brushes.Black, padding - 35, yEticheta - 8);
+                g.DrawString(group.Name, font, Brushes.Black,
+                    new RectangleF(0, y, paddingLeft - 10, barHeight),
+                    new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center });
+
+                g.FillRectangle(brushBar, paddingLeft, y, barLength, barHeight);
+
+                g.DrawString(group.Count.ToString(), font, Brushes.Black,
+                    new PointF(paddingLeft + barLength + 5, y));
             }
 
-            int i = 0;
-            foreach (var kvp in histogramData)
+            float axaY = paddingTop + data.Count * (barHeight + barSpacing);
+            g.DrawLine(penAxis, paddingLeft, axaY, paddingLeft + maxBarLength, axaY);
+
+            int nrEtichete = 5;
+            for (int j = 0; j <= nrEtichete; j++)
             {
-                int drepturiCount = kvp.Key;
-                int utilizatoriCount = kvp.Value;
+                int val = j * maxVal / nrEtichete;
+                float x = paddingLeft + val * maxBarLength / (float)maxVal;
 
-                float height = (float)utilizatoriCount / maxVal * maxHeight;
-                float x = padding + i * barWidth;
-                float y = panelHistograma.Height - padding - height;
-
-                g.FillRectangle(brushBar, x, y, barWidth, height);
-                g.DrawString($"{drepturiCount}", font, Brushes.Black, x + barWidth / 3, panelHistograma.Height - padding + 5);
-                g.DrawString($"{utilizatoriCount}", font, Brushes.Black, x + barWidth / 3, y - 20);
-
-                i++;
+                g.DrawLine(Pens.Gray, x, axaY, x, axaY + 5);
+                g.DrawString(val.ToString(), font, Brushes.Black, new PointF(x - 10, axaY + 10));
             }
 
-            g.DrawLine(penAxis, padding, panelHistograma.Height - padding, panelHistograma.Width - padding, panelHistograma.Height - padding);
-            g.DrawLine(penAxis, padding, padding, padding, panelHistograma.Height - padding);
+            g.DrawString("Număr drepturi", font, Brushes.Black,
+                new PointF(paddingLeft + maxBarLength / 2 - 40, axaY + 30));
         }
     }
 }
